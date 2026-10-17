@@ -30,8 +30,9 @@ jobs:
           if [ -z "$KEY" ]; then echo "No key"; exit 1; fi
           echo "$KEY" | openssl enc -aes-256-cbc -d -salt -pbkdf2 -in session.enc -out session.tar.gz -pass stdin
           tar -xzf session.tar.gz
+          mv session AlyaBot-Session
           rm -f session.tar.gz
-          echo "Session files: $(ls session/ | wc -l)"
+          echo "Session files: $(ls AlyaBot-Session/ | wc -l)"
 
       - name: Install Dependencies
         run: npm install --no-audit --no-fund
