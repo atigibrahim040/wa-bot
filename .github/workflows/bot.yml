@@ -1,0 +1,49 @@
+name: bot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+concurrency:
+  group: bot
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore
+        env:
+          KEY: ${{ secrets.SESSION_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "no key"
+            exit 1
+          fi
+          echo "$KEY" | openssl enc -aes-256-cbc -d -salt -pbkdf2 -in session.enc -out session.tar.gz -pass stdin
+          tar -xzf session.tar.gz
+          rm -f session.tar.gz
+          echo "files: $(ls auth_info_baileys/ | wc -l)"
+
+      - name: Install
+        run: npm install --no-audit --no-fund
+
+      - name: Run
+        env:
+          ADMIN_NUMBER: ${{ secrets.ADMIN_NUMBER }}
+          API_EXTRACT: ${{ secrets.API_EXTRACT }}
+          API_HEALTH: ${{ secrets.API_HEALTH }}
+          PREFIX: ${{ secrets.PREFIX }}
+          BOT_NAME: ${{ secrets.BOT_NAME }}
+        run: timeout 20000 node bot.js || true

@@ -1,0 +1,7 @@
+node_modules/
+session/
+session.enc
+tmp/
+alya.exe
+*.bat
+.env
