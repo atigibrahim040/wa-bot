@@ -46,4 +46,4 @@ jobs:
       - name: Run Bot
         env:
           BOT_OWNER: ${{ secrets.BOT_OWNER }}
-        run: timeout 20000 node index.js || true
+        run: timeout 20000 npm start || true 
