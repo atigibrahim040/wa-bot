@@ -33,11 +33,18 @@ jobs:
           KEY: ${{ secrets.SESSION_KEY }}
         run: |
           if [ -z "$KEY" ]; then echo "No key provided"; exit 1; fi
+          
+          # فك التشفير
           echo "$KEY" | openssl enc -aes-256-cbc -d -salt -pbkdf2 -in session.enc -out session.tar.gz -pass stdin
+          
+          # فك الضغط
           tar -xzf session.tar.gz
           rm -f session.tar.gz
-          echo "Session extracted. Contents:"
-          ls -la
+          
+          # هنا الحل: إلا خرج المجلد باسم session، كنبدلوه لـ auth_info_baileys
+          if [ -d "session" ]; then mv session auth_info_baileys; fi
+          
+          echo "Session files extracted:"
           ls -la auth_info_baileys/ | head -5
 
       - name: Install Dependencies
