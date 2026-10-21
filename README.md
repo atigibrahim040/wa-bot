@@ -1,0 +1,867 @@
+<div align=center>
+<a href="#"><img src="https://files.catbox.moe/tl36qw.png"/></a> 
+
+  <a href="https://ko-fi.com/hiroosy"><img src="https://img.shields.io/badge/Sponsor-000000?style=for-the-badge&logo=githubsponsors"/></a>
+  <a href="https://github.com/HirooSy/HIROBOT/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/Change_log-000000.svg?&style=for-the-badge&logo=lmstudio&logoColor=white"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/NodeJS_%3E%3D18-000000.svg?&style=for-the-badge&logo=node.js&labelColor=000000&logoColor=green"/></a>
+</div>
+
+> [!IMPORTANT]
+> Please read the [<code>LICENSE</code>](https://github.com/HirooSy/HIROBOT/blob/main/LICENSE) before using this project! You're free to recode it, but do not sell or claim this project as your own. <b>Do not change the License.</b> if you modify it, <b>please credit me in your License.</b>
+
+> [!NOTE]
+> High-performance WhatsApp bot with AI agent, VoIP calling capabilities, and a website feature. Built with Baileys and NodeJS v18+.
+> 
+> ---
+> 
+> <p align=center><b>Features:</b></p>
+> 
+> - [x] AI Agent Using Gemini.
+> - [x] Audio & Video Call.
+> - [x] Multi Sessions.
+> - [x] Database native sql / Mongodb / MySql2.
+> - [x] Support AI Rich and Button Message.
+> - [x] Cloudflared Tunnel Website.
+> - [x] Lightweight & High-performance.
+
+---
+
+<table align=center height=100>
+  <td>
+  <sub>
+    
+```env
+         ---Project Structure---
+HIROBOT
+├── 📁lib
+│   ├── 📁package
+│   │   ├── 📁ai            
+│   │   ├── 📁voip           # Call
+│   │   └── 📁website
+│   │       ├── 📁views      # HTML folder
+│   │       └── 📄server.js
+│   ├── 📁scrapers
+│   ├── 📁utils
+│   ├── 📄config.js        # bot's preference
+│   ├── 📄main.js
+│   └── 📄start.js
+├── 📁data
+│   ├── 📁sessions
+│   ├── 📁tunnel
+│   └── 📁tmp
+├── 📁plugins
+├── 📄.env                 # your tokens
+├── 📄CHANGELOG.md
+├── 📄LICENSE
+├── 📄package.json
+└── 📄README.md
+```
+</sub>
+
+  </td>
+</table><br>
+
+
+<details> 
+  <summary align=left><b>About AI Agent</b></summary>
+<p align=center>──────────────</p>
+
+<h4 align=center >How AutoHeal Works?</h4>
+
+> ```mermaid
+> flowchart LR
+>     A@{ shape: odd, label: "User Command" } --> Error
+>     Error process@==> C@{ shape: diamond, label: "Gemini Server
+> Gemma-4-31b-it"}
+>     C --> D@{ shape: circle, label: "⏳" }
+>     D ==> E[✅ Write and save]
+>     D ==> F[❌ Stop autoheal]
+>     E --> G[Done]
+>     F --> H[Note it as failure]
+>
+> process@{ animate: true }
+> style Error stroke:#f00
+> ```
+
+<table align=center>
+  <tr>
+    <td>Gemini 3.1 Lite-Flash</td>
+    <td>Daily Conversation </td>
+  </tr>
+  <tr>
+    <td>Gemini 3.1 Lite</td>
+    <td>Daily conversation but more complex</td>
+  </tr>
+ <tr>
+    <td>Gemma-4-31b-it</td>
+    <td>AutoHeal system and coding</td>
+  </tr>
+  <tr>
+    <td>Gemma-4-26b-a4b-it</td>
+    <td>AutoHeal system and coding</td>
+  </tr>
+</table>
+
+<h4 align=center>How to add a new tool</h4>
+  
+<details>
+  <summary align=center><sub>All MCP Helper</sub></summary>
+  
+<table>
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Function</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="3"><strong>Session &amp; Chat History</strong></td>
+      <td><code>getSession(jid)</code></td>
+      <td>get chat history array for a chat</td>
+    </tr>
+    <tr>
+      <td><code>resetSession(jid)</code></td>
+      <td>clear chat history for a chat</td>
+    </tr>
+    <tr>
+      <td><code>getPinnedNotesReadOnly(jid)</code></td>
+      <td>get notes pinned to a chat</td>
+    </tr>
+    <tr>
+      <td rowspan="4"><strong>Talking to the AI / Agent Loop</strong></td>
+      <td><code>runAgent(conn, m, text, opts)</code></td>
+      <td>run a full AI turn, get a reply</td>
+    </tr>
+    <tr>
+      <td><code>runAgentConfirmed(conn, m, opts)</code></td>
+      <td>resume an agent turn awaiting confirmation</td>
+    </tr>
+    <tr>
+      <td><code>callTool(name, args)</code></td>
+      <td>call another registered tool by name</td>
+    </tr>
+    <tr>
+      <td><code>listTools() / countTools()</code></td>
+      <td>list / count registered tools</td>
+    </tr>
+    <tr>
+      <td rowspan="4"><strong>Identity &amp; Permissions</strong></td>
+      <td><code>getUserIdentity(jid, db, conn)</code></td>
+      <td>get sender's name/number/owner/timezone</td>
+    </tr>
+    <tr>
+      <td><code>checkGroupAdminOrOwner(groupJid)</code></td>
+      <td>check if sender is group admin/owner</td>
+    </tr>
+    <tr>
+      <td><code>readGroupSettings(groupJid)</code></td>
+      <td>read group settings from brain storage</td>
+    </tr>
+    <tr>
+      <td><code>readOwnerList()</code></td>
+      <td>list registered bot owners</td>
+    </tr>
+    <tr>
+      <td rowspan="2"><strong>Persistent Storage (&quot;brain&quot;)</strong></td>
+      <td><code>loadBrain() / saveBrain(brain)</code></td>
+      <td>read/write ai-brain.json</td>
+    </tr>
+    <tr>
+      <td><code>ensureBrainGroupSlot(brain, jid)</code></td>
+      <td>ensure a group slot exists in brain</td>
+    </tr>
+    <tr>
+      <td rowspan="10"><strong>Web &amp; Media</strong></td>
+      <td><code>searchWebGrounded(query)</code></td>
+      <td>grounded web search</td>
+    </tr>
+    <tr>
+      <td><code>captureWebsiteScreenshot(url)</code></td>
+      <td>screenshot a webpage</td>
+    </tr>
+    <tr>
+      <td><code>fetchWebsiteHtmlFallback(url)</code></td>
+      <td>fetch raw HTML of a page</td>
+    </tr>
+    <tr>
+      <td><code>peekFetchBuffer(url, headers)</code></td>
+      <td>peek a file buffer from a URL</td>
+    </tr>
+    <tr>
+      <td><code>peekfetchVideoBuffer(url, maxBytes, headers)</code></td>
+      <td>peek a video buffer from a URL</td>
+    </tr>
+    <tr>
+      <td><code>detectPlatform(url)</code></td>
+      <td>detect platform (YouTube/TikTok/etc)</td>
+    </tr>
+    <tr>
+      <td><code>peekAnalyzeWithVision(mediaItems, platform, url, context)</code></td>
+      <td>analyze media with vision model</td>
+    </tr>
+    <tr>
+      <td><code>buildMediaPart(m)</code></td>
+      <td>extract image/video/audio from a message</td>
+    </tr>
+    <tr>
+      <td><code>fetchSocialMulti(url)</code></td>
+      <td>download helper for social media</td>
+    </tr>
+    <tr>
+      <td><code>downloadUserImageAsUrl(m)</code></td>
+      <td>upload user's image, get back a URL</td>
+    </tr>
+    <tr>
+      <td rowspan="3"><strong>File &amp; Data Tools</strong></td>
+      <td><code>readFileToolCore(file_path, offset)</code></td>
+      <td>core logic behind &quot;read file&quot; tool</td>
+    </tr>
+    <tr>
+      <td><code>buildSimpleDiff(oldStr, newStr)</code></td>
+      <td>build a text diff between two strings</td>
+    </tr>
+    <tr>
+      <td><code>parseDbKeyPath(key_path)</code></td>
+      <td>parse a dotted key path for db access</td>
+    </tr>
+    <tr>
+      <td rowspan="7"><strong>Plugin Execution (Advanced/Internal)</strong></td>
+      <td><code>resolvePlugin(command)</code></td>
+      <td>find which plugin matches a command</td>
+    </tr>
+    <tr>
+      <td><code>resolveCustomPrefixPlugin(rawInput)</code></td>
+      <td>same, for custom-prefix commands</td>
+    </tr>
+    <tr>
+      <td><code>execPluginCommand(command, argsStr, opts)</code></td>
+      <td>run an existing bot plugin/command</td>
+    </tr>
+    <tr>
+      <td><code>execEval(code, opts)</code></td>
+      <td>evaluate raw JS code (owner-only, dangerous)</td>
+    </tr>
+    <tr>
+      <td><code>classifyPluginRisk(name, plugin)</code></td>
+      <td>classify a plugin's risk level</td>
+    </tr>
+    <tr>
+      <td><code>accessLabel(level) / riskBadge(level)</code></td>
+      <td>risk-level label/badge helpers</td>
+    </tr>
+    <tr>
+      <td><code>pluginRequirements(plugin)</code></td>
+      <td>get a plugin's access requirements</td>
+    </tr>
+    <tr>
+      <td><code>getDangerousDocReason(m)</code></td>
+      <td>check if a message/doc looks risky</td>
+    </tr>
+    <tr>
+      <td rowspan="8"><strong>Error Handling &amp; Internals</strong></td>
+      <td><code>handleError(conn, m, err, pluginName)</code></td>
+      <td>central error handler/reporter</td>
+    </tr>
+    <tr>
+      <td><code>isTransientApiError(err)</code></td>
+      <td>check if an API error is transient</td>
+    </tr>
+    <tr>
+      <td><code>getApiKeys() / getNextKey() / rotateKey() / resetRateLimit(jid)</code></td>
+      <td>API key pool management</td>
+    </tr>
+    <tr>
+      <td><code>normalizeApiKeys(input)</code></td>
+      <td>format/clean a raw API key list</td>
+    </tr>
+    <tr>
+      <td><code>getPersonality()</code></td>
+      <td>get bot's configured personality/system prompt</td>
+    </tr>
+    <tr>
+      <td><code>MODELS</code></td>
+      <td>map of available AI models</td>
+    </tr>
+    <tr>
+      <td><code>setCurrentContext(...)</code></td>
+      <td>internal turn/state management (used by mcp.js itself)</td>
+    </tr>
+    <tr>
+      <td><code>hasPending() / confirmPending() / cancelPending()</code></td>
+      <td>internal turn/state management (used by mcp.js itself)</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+</details>
+
+<sub>
+  
+```javascript
+/*
+  ctx()   -> Returns the current chat state (always fresh, backed by an
+             internal module-level object in mcp.js). Common fields:
+               - currentJid : the id of the chat/user sending the message
+               - conn       : the active WhatsApp connection (for manual sendMessage)
+               - isOwner    : true if the sender is the bot owner
+               - isROwner   : true if the sender is a "real" owner (not fromMe)
+               - timezone   : sender's configured timezone, e.g. "Asia/Jakarta"
+
+  Tools import helpers straight from '../mcp.js'. There's no circular-import
+  issue: mcp.js never statically imports files in ./tools -- it loads them
+  with a dynamic import() at runtime (see loadToolsDir), so importing mcp.js
+  from a tool file at the top level is completely safe.
+*/
+import { ctx, searchWebGrounded } from '../mcp.js'
+
+export default [
+    {
+        name: 'check_weather',
+        description: 'Check the weather for a specific city. Use it when a user asks for the weather, e.g., "What\'s the weather like in Jakarta?"',
+        parameters: {
+            city: { type: 'string', description: 'City name, e.g. "Jakarta"', required: true }
+        },
+        execute: async ({ city }) => {
+            const { currentJid } = ctx()
+            if (!currentJid) return 'Chat context not available'
+
+            // const result = await searchWebGrounded(`current weather in ${city}`) // only if you need a helper from mcp.js
+
+            return `Weather in ${city}: sunny, 30°C`
+        }
+    }
+]
+```
+
+</sub>
+</details>
+
+<details>
+   <summary align=left><b>About Website</b></summary>
+   <p align=center>──────────────</p>
+
+<h4>.env Settings for Website</h4>
+
+<table align="center">
+  <tbody>
+    <tr>
+      <td rowspan="5"><b>SCENARIO 1</b><br><sub>No public address, using own domain</sub></td>
+      <td colspan="2">
+        
+> [!NOTE]
+> <sub>Your panel does <b>not</b> give a real public address/IP (e.g. Pterodactyl, where the address is just <code>name:port</code>, internal-only). The bot still runs <code>cloudflared</code> (binary auto-downloaded, no manual install) to open a quick tunnel — your custom domain sits in front of it via a Cloudflare Worker + KV Namespace, instead of a regular DNS record.</sub>
+
+</td>
+    </tr>
+    <tr>
+      <td><code>CF_KV_TOKEN</code></td>
+      <td>Cloudflare API Token with <b>Account &gt; Workers KV Storage &gt; Edit</b> permission, from <a href="https://dash.cloudflare.com/profile/api-tokens">dash.cloudflare.com/profile/api-tokens</a></td>
+    </tr>
+    <tr>
+      <td><code>CF_ACCOUNT_ID</code></td>
+      <td>Found on the Workers &amp; Pages overview page</td>
+    </tr>
+    <tr>
+      <td><code>CF_KV_NAMESPACE_ID</code></td>
+      <td>Found on your KV Namespace's page</td>
+    </tr>
+    <tr>
+      <td><code>CF_HOSTNAME</code></td>
+      <td>Required for the domain that becomes your bot's main address, e.g. <code>bot.yourdomain.com</code></td>
+    </tr>
+    <tr>
+      <td rowspan="4"><b>SCENARIO 2</b><br><sub>DNS-pointable server, using own domain</sub></td>
+      <td colspan="3">
+        
+> [!NOTE]
+> <sub>Your panel/server <b>can</b> be pointed to via a DNS record (a VPS with a fixed IP, or a panel supporting Cloudflare Named Tunnel / Zero Trust). Requires card verification on Cloudflare Zero Trust (free forever, no charge unless you exceed free-tier limits).</sub>
+</td>
+    </tr>
+    <tr>
+      <td><code>CF_TOKEN</code></td>
+      <td>Named Tunnel token from Cloudflare Zero Trust</td>
+    </tr>
+    <tr>
+      <td><code>CF_HOSTNAME</code></td>
+      <td>Required for the domain that becomes your bot's main address, e.g. <code>bot.yourdomain.com</code></td>
+    </tr>
+    <tr>
+      <td><code>HOSTNAME_PUBLIC</code></td>
+      <td>Fill it using same value as CF_HOSTNAME <code>bot.yourdomain.com</code></td>
+    </tr>
+    <tr>
+      <td><b>SCENARIO 3</b><br><sub>No own domain, free provider</sub></td>
+      <td colspan="2">
+        
+> [!NOTE]
+> <sub><code>HOSTNAME_PUBLIC</code> — you don't own a custom domain, but have a free public address from another provider (e.g. <code>my.zone.id</code>, <code>is.dev</code>) already pointed (A/CNAME) at your panel's real public address. Fill in <b>only</b> this one, leave everything above empty — the bot will not run cloudflared/any tunnel at all.</sub>
+      </td>
+    </tr>
+    <tr>
+      <td><b>SCENARIO 4</b><br><sub>Default, nothing configured</sub></td>
+      <td colspan="2">
+      
+> [!NOTE]
+> Nothing above is filled in — the bot automatically uses a free <code>trycloudflare.com</code> URL that changes every time it restarts. No setup required.</td>
+    </tr>
+  </tbody>
+</table>
+
+</details>
+
+<details>
+   <summary align=left><b>Message types</b></summary>
+   <p align=center>──────────────</p>
+
+<details> <summary>📖 Basic</summary>
+  <sub>
+    
+```javascript
+conn.reply(m.chat, 'Hello world!', m)
+
+/** @Media
+URL — 'https://example.com/audio.mp3'
+Local — '/path/to/video.mp4'
+
+@Options
+send as document — { document:true }
+send as voicenote — { ptt: true }
+**/
+conn.sendFile(m.chat, media, "file.png", "hello world!", m, { options })
+
+conn.sendContact(m.chat, [
+  ['6281234567890', 'HirooSy'],
+  ['6289876543210', 'Hiro']
+], m)
+
+conn.react(m.chat, '👍', m.key)
+```
+</sub></details>
+
+<details> <summary>📍 Location</summary>
+  <sub>
+  
+```javascript
+conn.sendLocation(m.chat, 'https://example.com/thumb.jpg','Title','Address',m)
+```
+
+</sub></details>
+
+<details> <summary>🧾 Product</summary>
+  <sub>
+ 
+```javascript
+/**@Media
+   String: "https://example.com/img.png" or "./image.png"
+   Array: [ "https://example.com/", "./img.png" ]
+**/
+      
+conn.sendProduct(m.chat, media, 'Title', 'Description, m, {
+    businessOwnerJid: "0@s.whatsapp.net",
+    currencyCode: 'USD',
+    priceAmount1000: 20,
+    retailerId: 'Code Promo',
+})
+```
+
+</sub></details>
+
+<details> <summary>🖼️ Url Preview</summary>
+  <sub>
+    
+```javascript
+conn.sendUrlPreview(
+  m.chat,
+  'https://example.com/thumb.jpg',
+  'https://example.com Hello World!',
+  'Url Preview Title',
+  'Url Description',
+  'IMAGE',   // true for highQuality, or ['IMAGE', true]
+  m
+)
+```
+</sub></details>
+
+<details> <summary>🛒 Carousel</summary>
+  <sub>
+    
+```javascript
+conn.sendButton(m.chat, {
+    text: 'Interactive with Carousel!',
+    footer: 'HirooSy',
+    cards: [
+        {
+            image: { url: './path/to/image.jpg' },
+            caption: 'Image 1',
+            footer: 'Image 1',
+            nativeFlow: [{ text: 'Source', url: 'https://example.com', useWebview: true }]
+        },
+        {
+            image: { url: 'https://example.com/image.png' },
+            caption: 'Image 2',
+            footer: 'Image 2',
+            ltoText: 'New Coupon!',
+            ltoCode: 'HiroBot',
+            ltoUrl: 'https://example.com',
+            nativeFlow: [{ text: 'Source', url: 'https://example.com' }]
+        }
+    ]
+}, m)
+```
+</sub></details>
+
+<details> <summary>🔖 NativeFlow Button</summary>
+  <sub>
+
+```javascript
+conn.sendButton(m.chat, {
+    image: { url: './path/to/image.jpg' },
+    caption: 'Interactive!',
+    footer: 'My Bot',
+    optionText: 'Select Options',
+    optionTitle: 'Select Options',
+    ltoText: 'HirooSy',
+    ltoCode: 'Hiro bot',
+    ltoUrl: 'https://example.com',
+    nativeFlow: [
+        { text: '👋🏻 Greeting', id: '#Greeting' },
+        { text: '📞 Call', call: '628123456789' },
+        { text: '📋 Copy', copy: 'Hiro bot' }, 
+        { text: '🌐 Source', url: 'https://example.com', useWebview: true },
+        {
+            text: '📋 Select',
+            sections: [
+                { title: '✨ Section 1', rows: [{ header: '', title: '🏷️ Coupon', description: '', id: '#CouponCode' }] },
+                { title: '✨ Section 2', highlight_label: '🔥 Popular', rows: [{ header: '', title: '💭 Secret Ingredient', description: '', id: '#SecretIngredient' }] }
+            ],
+        }
+    ]
+}, m)
+```
+</sub></details>
+
+<details><summary>❇️ Widget</summary>
+
+<sub>
+  
+```javascript
+await conn.sendButton(m.chat, {
+    text: 'Full demo of all widget components',
+    footer: 'A2UI Showcase',
+    widget: {
+        align: 'center',
+        fallback: 'Widget cannot be loaded on this device', // optional
+        items: [
+            // --- TEXT ---
+            { text: 'Welcome to the Widget Demo', variant: 'title' },
+            { text: 'This is a longer description explaining what the widget contains.', variant: 'body' },
+            { text: 'Small caption', variant: 'caption' },
+
+            // --- ICON ---
+            { icon: 'info' },                          // -> '[i]'
+            { icon: 'warning', style: 'symbol' },      // -> '!'
+            { icon: 'favorite', native: true },        // uses native Icon component
+
+            // --- IMAGE ---
+            {
+                image: 'https://example.com/banner.jpg',
+                variant: 'header',
+                fit: 'cover',
+                description: 'Promo banner'
+            },
+
+            // --- VIDEO ---
+            { video: 'https://example.com/preview.mp4' },
+
+            // --- AUDIO ---
+            {
+                audio: 'https://example.com/audio.mp3',
+                description: 'Listen to this audio'
+            },
+
+            // --- DIVIDER ---
+            { divider: 'horizontal' },
+            { divider: 'vertical' },
+
+            // --- BUTTON ---
+            {
+                button: 'Open Website',
+                url: 'https://example.com',
+                variant: 'primary'
+            },
+
+            // --- TEXT INPUT ---
+            {
+                input: 'name',
+                label: 'Enter your name',
+                value: '',
+                variant: 'shortText'
+            },
+            {
+                input: 'message',
+                label: 'Long message',
+                variant: 'longText',
+                value: ''
+            },
+            {
+                input: 'email',
+                label: 'Email',
+                variant: 'shortText',
+                validationRegexp: '^[^@]+@[^@]+\\.[^@]+$'
+            },
+
+            // --- CHECKBOX ---
+            { checkbox: 'I agree to the terms & conditions', value: false },
+
+            // --- CHOICE PICKER ---
+            {
+                choice: ['Red', 'Green', 'Blue'],
+                label: 'Pick your favorite color',
+                variant: 'mutuallyExclusive',
+                displayStyle: 'chips',
+                filterable: true
+            },
+            {
+                choice: [
+                    { label: 'Option A', value: 'a' },
+                    { label: 'Option B', value: 'b' },
+                    { label: 'Option C', value: 'c' }
+                ],
+                label: 'Pick multiple (multi-select)',
+                variant: 'multipleSelection',
+                value: ['a', 'b']
+            },
+
+            // --- SLIDER ---
+            {
+                slider: 100,
+                min: 0,
+                max: 100,
+                value: 50,
+                label: 'Volume'
+            },
+
+            // --- DATETIME ---
+            {
+                datetime: true,
+                label: 'Pick a date',
+                value: '',
+                enableDate: true,
+                enableTime: false
+            },
+
+            // --- ROW (horizontal) ---
+            {
+                row: [
+                    { text: 'Left' },
+                    { text: 'Center' },
+                    { text: 'Right' }
+                ],
+                justify: 'space-between',
+                align: 'center'
+            },
+
+            // --- COLUMN (vertical) ---
+            {
+                column: [
+                    { text: 'Row 1' },
+                    { text: 'Row 2' },
+                    { text: 'Row 3' }
+                ],
+                justify: 'start',
+                align: 'stretch'
+            },
+
+            // --- LIST ---
+            {
+                list: [
+                    { text: '• First item' },
+                    { text: '• Second item' },
+                    { text: '• Third item' }
+                ],
+                direction: 'vertical'
+            }
+        ]
+    }
+}, quoted)
+
+```
+</sub>
+  
+</details>
+
+<details> <summary>🗓️ AI Rich</summary>
+  <sub>
+
+```javascript
+await conn.aiRich()
+    .setTitle('Ai Rich Message')
+    .addText('[HyperLink](https://example.com)\nCitation [](https://example.com)\n[x^2+y^2=r^2|100|100](https://example.com/latex.png)')
+    .addImage('https://example.com/image.png')
+    .addCode('javascript', `console.log('Hello World')`)
+    .addHtml(["<html>Hello world</html>", "Tab 1"], ["<html>Hi twin</html>", "Tab 2"])  // no comma
+    .addTable([
+        ['Name', 'HirooSy'],
+        ['Bio', 'Im developer'],
+        ['Age', '67']
+    ])
+    .addSource([['https://example.com/favicon.ico', 'https://example.com', 'Source']])
+    .addTip('Tip Text')
+    .addSuggest(['Continue', 'Cancel'])
+    .send(m.chat, { quoted: m })
+      
+ // animated progress
+ await conn.aiRich()
+  .addProcess("Loading...")
+  .send(m.chat)
+```
+</sub></details>
+
+<details> <summary>📦 Sticker</summary>
+  <sub>
+
+```javascript
+/** @Media
+URL — 'https://example.com/image.png'
+Local — '/path/to/image.png'
+**/
+
+// Sticker
+conn.sendSticker(m.chat, media, { packname: "Hiro", author: "Bot" }, m)
+ 
+// StickerPack
+conn.sendStickerPack(m.chat, {
+   cover: { url: media },
+   stickers: [
+      { data: { url: media } },
+      { data: { url: media } },
+   ],
+   name: 'My Sticker Pack',
+   publisher: 'Publisher stickerpack',
+   description: 'Description pack'
+})
+```
+</sub></details>
+
+<details> <summary>📞 Call</summary>
+  <sub>
+
+```javascript
+/** @Media
+URL — 'https://example.com/audio.mp3'
+Local — '/path/to/video.mp4'
+Support Array — [ url, path ]
+**/
+
+import Voip from "../../lib/package/voip/index.js"
+const call = new Voip(conn)
+
+call(m.sender, media, "720p")
+      
+// hang up
+call(m.sender, media, "720p").end()
+
+// mute
+call(m.sender, media, "720p").silent()
+```
+</sub></details>
+</details>
+  
+<details>
+   <summary><b>Install and Run</b></summary><br>
+
+<table align="center">
+  <tbody>
+    <tr>
+      <td rowspan="4"><b>REQUIREMENT</b></td>
+      <td><b>Server</b></td>
+      <td colspan="2">100% CPU Limit, 500MB RAM, and 1GB Storage<br> <code>-</code></td>
+    </tr>
+    <tr>
+      <td><b>NodeJS</b></td>
+      <td colspan="2">>=18<br> <code>pkg install nodejs</code></td>
+    </tr>
+    <tr>
+      <td><b>Python</b> <i><sub>(Optional)</sub></i></td>
+      <td colspan="2">>=3.10 <br> <code>pkg install python</code></td>
+    </tr>
+    <tr>
+      <td><b>FFMPEG</b></td>
+      <td colspan="2">latest <br> <code>pkg install ffmpeg</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Configuration environment (.env)</h4>
+
+1. Create file ".env"
+2. And set it with this code:
+
+<table align=center height=100>
+  <td>
+<sub>
+  
+```env
+OWNER=6281234567890,6281234567890
+MODERATOR=6281234567890,6281234567890
+
+# Support mongodb/MySql2/Local file sql
+# • mongodb+srv://...
+# • mysql://...
+# • dont fill it to use local file sql
+DATABASE=
+
+AI_PERSONALITY=
+
+# Gemini API Key (Free, Get from aistudio.google.com)
+# Accepts single string or Array for fallback
+AI_KEYS=
+
+# OPTIONAL ENV
+#__________________________________________________
+
+GIT_CLASSIC_KEY=
+GIT_TOKEN=
+GIT_USER=
+GIT_EMAIL=
+GIT_REPO=
+
+# TUNNEL / CUSTOM DOMAIN (optional)
+#__________________________________________________
+# See README.md -> "About Website" for full explanation of each scenario.
+
+CF_KV_TOKEN=
+CF_ACCOUNT_ID=
+CF_KV_NAMESPACE_ID=
+
+CF_TOKEN=
+CF_HOSTNAME=
+
+HOSTNAME_PUBLIC=
+```
+</sub>
+</td>
+</table>
+
+<sub align=left>
+
+```bash
+$ git clone https://github.com/HirooSy/HIROBOT.git
+$ cd HIROBOT
+$ npm i
+$ node .
+```
+</sub>
+
+<div align=center>
+
+  <a href="#"><img height="25" align=right src="https://img.shields.io/badge/Size-25_MB-black?style=for-the-badge"/> </a>
+  
+  <a href="https://wispbyte.com"><img height="25" align=left src="https://img.shields.io/badge/Deploy-black?style=for-the-badge&logo=4chan&logoColor=blue"/></a>
+
+</div>
+
+</details>
