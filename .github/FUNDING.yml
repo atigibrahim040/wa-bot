@@ -1,1 +1,49 @@
-ko_fi: hiroosy 
+name: HIROBOT
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+concurrency:
+  group: hiro-bot
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install FFMPEG
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Restore Session
+        env:
+          KEY: ${{ secrets.SESSION_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then echo "No key provided"; exit 1; fi
+          echo "$KEY" | openssl enc -aes-256-cbc -d -salt -pbkdf2 -in session.enc -out session.tar.gz -pass stdin
+          tar -xzf session.tar.gz
+          rm -f session.tar.gz
+          echo "Session extracted. Contents:"
+          ls -la
+          ls -la auth_info_baileys/ | head -5
+
+      - name: Install Dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Run Bot
+        env:
+          BOT_OWNER: ${{ secrets.BOT_OWNER }}
+        run: timeout 20000 npm start || true
