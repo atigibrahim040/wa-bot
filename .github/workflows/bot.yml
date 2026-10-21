@@ -34,24 +34,28 @@ jobs:
         run: |
           if [ -z "$KEY" ]; then echo "No key provided"; exit 1; fi
           
-          # فك تشفير session.enc
           echo "$KEY" | openssl enc -aes-256-cbc -d -salt -pbkdf2 -in session.enc -out session.tar.gz -pass stdin
-          
-          # فك الضغط
           tar -xzf session.tar.gz
           rm -f session.tar.gz
           
-          # إذا كان المجلد اسمه session، نعيد تسميته إلى auth_info_baileys
+          # إنشاء المجلد الصحيح للجلسة
+          mkdir -p data/sessions/main
+          
+          # نقل ملفات الجلسة للمكان الصحيح
           if [ -d "session" ]; then
-            mv session auth_info_baileys
+            mv session/* data/sessions/main/ 2>/dev/null || true
+            rm -rf session
+          elif [ -d "auth_info_baileys" ]; then
+            mv auth_info_baileys/* data/sessions/main/ 2>/dev/null || true
+            rm -rf auth_info_baileys
           fi
           
           # التحقق من وجود creds.json
-          if [ -f "auth_info_baileys/creds.json" ]; then
-            echo "✅ Session found and ready."
+          if [ -f "data/sessions/main/creds.json" ]; then
+            echo "✅ Session extracted perfectly."
           else
-            echo "❌ ERROR: creds.json not found in auth_info_baileys."
-            ls -la
+            echo "❌ ERROR: creds.json not found."
+            ls -la data/sessions/main/ || true
             exit 1
           fi
 
