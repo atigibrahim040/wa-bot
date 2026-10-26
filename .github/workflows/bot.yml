@@ -32,10 +32,15 @@ jobs:
           echo "$KEY" | openssl enc -aes-256-cbc -d -salt -pbkdf2 -in session.enc -out session.tar.gz -pass stdin
           tar -xzf session.tar.gz
           rm -f session.tar.gz
-          echo "=== الملفات في الجذر ==="
-          ls -la
-          echo "=== الملفات داخل مجلد session ==="
-          ls -la session/ || echo "مجلد session ماشي موجود!"
+          mkdir -p session
+          if [ -d "auth_info_baileys" ]; then mv auth_info_baileys/* session/ 2>/dev/null; rm -rf auth_info_baileys; fi
+          if [ -f "creds.json" ]; then mv *.json session/ 2>/dev/null; fi
+          echo "=== الملفات داخل session ==="
+          ls -la session/
+          if [ ! -f "session/creds.json" ]; then
+            echo "❌ خطأ: ملف الجلسة مازال ما لقيناهش!"
+            exit 1
+          fi
 
       - name: Install Dependencies
         run: npm install --no-audit --no-fund

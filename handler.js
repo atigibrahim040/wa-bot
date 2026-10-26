@@ -6,8 +6,7 @@ const isOwner = (jid) => config.owner.some(o => o.includes(jid.split('@')[0]));
 
 async function sendMsg(sock, jid, content, quoted) {
     try {
-        const sent = await sock.sendMessage(jid, content, quoted ? { quoted } : {});
-        return sent;
+        return await sock.sendMessage(jid, content, quoted ? { quoted } : {});
     } catch (e) { console.error(e.message); }
 }
 
@@ -22,7 +21,7 @@ module.exports = async (sock, msg) => {
     const args = text.slice(1).trim().split(/ +/);
     const cmd = args.shift().toLowerCase();
 
-    // --- واجهة القائمة ---
+    // 1. القائمة
     if (cmd === 'قائمة' || cmd === 'menu') {
         const menuText = `╭━━━━━━━•「 ⚡ 」•━━━━━━━╮
     *${config.botName}*
@@ -42,6 +41,7 @@ module.exports = async (sock, msg) => {
 ╰━━━━━━━•「 👑 」•━━━━━━━╯
   ➤ المطور: ${config.ownerName}
   ➤ إنستغرام: ${config.socials.instagram}
+  ➤ جيتهاب: ${config.socials.github}
 
 ───────────────────────
 ⏱️ *السرعة:* ⚡ عالية جداً
@@ -51,7 +51,7 @@ module.exports = async (sock, msg) => {
         return;
     }
 
-    // --- أوامر التحميل ---
+    // 2. التحميل
     if (cmd === 'فديو' || cmd === 'video' || cmd === 'صوت' || cmd === 'audio') {
         let url = args[0];
         if (!url || !url.startsWith('http')) return sendMsg(sock, from, { text: '❌ أرسل رابط صحيح.' }, msg);
@@ -76,7 +76,7 @@ module.exports = async (sock, msg) => {
         return;
     }
 
-    // --- لوحة التحكم والإذاعة الذكية (للمالك فقط) ---
+    // 3. لوحة التحكم
     if (cmd === 'ادمن' || cmd === 'admin') {
         if (!isOwner(sender)) return sendMsg(sock, from, { text: '❌ للمطور فقط.' }, msg);
         
@@ -95,7 +95,7 @@ module.exports = async (sock, msg) => {
         return sendMsg(sock, from, { text: adminText }, msg);
     }
 
-    // --- أمر الإذاعة (Broadcast) للجميع بدون استثناء ---
+    // 4. الإذاعة
     if (cmd === 'اذاعة' || cmd === 'broadcast') {
         if (!isOwner(sender)) return;
         const message = args.join(' ');
@@ -109,7 +109,7 @@ module.exports = async (sock, msg) => {
             try {
                 await sock.sendMessage(user, { text: `📢 *رسالة إدارية:*\n\n${message}` });
                 success++;
-                await new Promise(r => setTimeout(r, 2000)); // تأخير ثانيتين لتجنب الحظر
+                await new Promise(r => setTimeout(r, 2000)); 
             } catch (e) { }
         }
         return sendMsg(sock, from, { text: `✅ تم الإرسال بنجاح إلى ${success} شخص.` }, msg);
